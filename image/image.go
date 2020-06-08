@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/aquasecurity/fanal/image/token"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	multierror "github.com/hashicorp/go-multierror"
 	"golang.org/x/xerrors"
+	ispec "github.com/opencontainers/image-spec/specs-go/v1"
 
 	"github.com/aquasecurity/fanal/image/daemon"
 	"github.com/aquasecurity/fanal/types"
@@ -186,7 +188,19 @@ func fileOpener(fileName string) func() (io.ReadCloser, error) {
 }
 
 func tryOCI(fileName string) (v1.Image, error) {
-	lp, err := layout.FromPath(fileName)
+	var inputTag string
+	var inputFileName string
+	
+	// Check if tag is specified in input
+	if strings.Contains(fileName,":") {
+		inputFileName = strings.Split(fileName,":")[0]
+		inputTag = strings.Split(fileName,":")[1]
+	} else {
+		inputFileName = fileName
+		inputTag = ""
+	}
+	
+	lp, err := layout.FromPath(inputFileName)
 	if err != nil {
 		return nil, xerrors.Errorf("unable to open %s as an OCI Image: %w", fileName, err)
 	}
@@ -205,11 +219,33 @@ func tryOCI(fileName string) (v1.Image, error) {
 		return nil, xerrors.New("no valid manifest")
 	}
 
-	// Support only first image
-	h := m.Manifests[0].Digest
-	img, err := index.Image(h)
-	if err != nil {
+	// Support image having tag separated by : , otherwise support first image
+
+	var img v1.Image
+
+	if inputTag != "" {
+		for _, manifest := range m.Manifests {
+			annotation := manifest.Annotations
+			tag := annotation[ispec.AnnotationRefName]
+			if tag == inputTag {
+				h := manifest.Digest
+				img, err = index.Image(h)
+				if err != nil {
+				return nil, xerrors.New("invalid OCI image")
+				}
+			}
+		}
+
+		if img == nil {
+			return nil, xerrors.New("invalid OCI image tag")
+		}
+		
+	} else {
+	  h := m.Manifests[0].Digest
+	  img, err = index.Image(h)
+	  if err != nil {
 		return nil, xerrors.New("invalid OCI image")
+	  }
 	}
 
 	return img, nil
