@@ -19,12 +19,7 @@ type FSCache struct {
 }
 
 func NewFSCache(cacheDir string) (FSCache, error) {
-	dir := filepath.Join(cacheDir, cacheDirName)
-	if err := os.MkdirAll(dir, 0700); err != nil {
-		return FSCache{}, xerrors.Errorf("failed to create cache dir: %w", err)
-	}
-
-	db, err := bolt.Open(filepath.Join(dir, "fanal.db"), 0600, nil)
+	db, err := bolt.Open(filepath.Join(cacheDir, "fanal.db"), 0600, nil)
 	if err != nil {
 		return FSCache{}, xerrors.Errorf("unable to open DB: %w", err)
 	}
@@ -43,7 +38,7 @@ func NewFSCache(cacheDir string) (FSCache, error) {
 
 	return FSCache{
 		db:        db,
-		directory: dir,
+		directory: cacheDir,
 	}, nil
 }
 
