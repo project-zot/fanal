@@ -5,8 +5,6 @@ import (
 )
 
 const (
-	cacheDirName = "fanal"
-
 	// artifactBucket stores artifact information with artifact ID such as image ID
 	artifactBucket = "artifact"
 	// blobBucket stores os, package and library information per blob ID such as layer ID
