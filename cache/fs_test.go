@@ -19,8 +19,8 @@ import (
 func newTempDB(t *testing.T, dbPath string) (string, error) {
 	dir := t.TempDir()
 	if dbPath != "" {
-		d := filepath.Join(dir, "fanal")
-		if err := os.MkdirAll(d, 0700); err != nil {
+		d := dir
+		if err := os.MkdirAll(d, 0o700); err != nil {
 			return "", err
 		}
 
@@ -349,7 +349,7 @@ func TestFSCache_PutArtifact(t *testing.T) {
 
 			fs, err := NewFSCache(tmpDir)
 			require.NoError(t, err)
-			//defer fs.Clear()
+			// defer fs.Clear()
 
 			err = fs.PutArtifact(tt.args.imageID, tt.args.imageConfig)
 			if tt.wantErr != "" {
