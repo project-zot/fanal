@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/Azure/azure-sdk-for-go v64.0.0+incompatible
 	github.com/Azure/go-autorest/autorest v0.11.27
-	github.com/Azure/go-autorest/autorest/adal v0.9.18
+	github.com/Azure/go-autorest/autorest/adal v0.9.22
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.11
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/GoogleCloudPlatform/docker-credential-gcr v2.0.5+incompatible
@@ -37,7 +37,7 @@ require (
 	github.com/urfave/cli/v2 v2.6.0
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/zap v1.21.0
-	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/exp v0.0.0-20220407100705-7b9b53b0aca4
 	golang.org/x/mod v0.6.0-dev.0.20211013180041-c96bc1413d57
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
