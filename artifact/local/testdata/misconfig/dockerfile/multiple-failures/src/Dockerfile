@@ -1,3 +1,3 @@
 FROM ubuntu
 
-FROM alpine
+FROM alpine:3.23.4
