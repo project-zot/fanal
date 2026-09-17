@@ -1,1 +1,1 @@
-FROM ubuntu
+FROM ubuntu:26.04
